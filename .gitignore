@@ -4,3 +4,4 @@ __pycache__/
 dashboard/.venv/
 *.pyc
 .superpowers/
+.playwright-mcp/
