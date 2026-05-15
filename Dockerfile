@@ -1,4 +1,4 @@
-FROM --platform=linux/arm/v7 ubuntu:22.04
+FROM --platform=linux/arm64 ubuntu:22.04
 RUN apt-get update && apt-get install -y cmake build-essential && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY . .
