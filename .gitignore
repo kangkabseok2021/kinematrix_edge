@@ -1,0 +1,6 @@
+build*/
+output/trajectory.json
+__pycache__/
+dashboard/.venv/
+*.pyc
+.superpowers/
