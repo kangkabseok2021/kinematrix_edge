@@ -4,9 +4,9 @@ A lightweight, headless C++ engine that converts a list of 3D Cartesian waypoint
 
 **Key proof point:** 9,900 interpolated points processed in **~0.25 ms on emulated ARM64** (Docker `linux/arm64`), well under the 10 ms industrial threshold.
 
-![Kinematrix-Edge dashboard — 9,900-point helix coloured blue→red by tilt magnitude](docs/assets/dashboard.png)
+![Kinematrix-Edge dashboard — 9,900-point helix with bloom, live motor steps and tilt readouts](docs/assets/dashboard.png)
 
-*9,900-point helix trajectory. Colour encodes tilt magnitude √(A²+B²): blue = low tilt (home orientation), red = high tilt (head angled away from +Z). Stats panel shows live point count and engine latency in µs.*
+*9,900-point helix with UnrealBloom post-processing. Colour gradient cyan→magenta encodes tilt magnitude √(A²+B²). Panel shows live A/B tilt angles, all 5 motor step positions, engine latency, and ARM64 benchmark badge. Scanner dot animates along the path in real time.*
 
 ---
 

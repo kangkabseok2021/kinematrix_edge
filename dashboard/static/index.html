@@ -5,46 +5,266 @@
   <title>Kinematrix-Edge</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #08080f; color: #d0d0e0; font-family: monospace; overflow: hidden; }
+
+    body {
+      background: #050508;
+      color: #c8d4e0;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      overflow: hidden;
+    }
+
     #canvas-container { position: fixed; inset: 0; }
+
+    /* ── Panel ────────────────────────────────────────────── */
     #panel {
-      position: fixed; top: 20px; right: 20px; width: 230px;
-      background: rgba(8,8,20,0.88);
-      border: 1px solid #222244;
-      border-radius: 6px; padding: 18px; z-index: 10;
+      position: fixed;
+      top: 20px; right: 20px;
+      width: 248px;
+      background: rgba(5, 8, 18, 0.82);
+      border: 1px solid rgba(0, 220, 255, 0.18);
+      border-radius: 8px;
+      padding: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0, 200, 255, 0.06), inset 0 1px 0 rgba(255,255,255,0.04);
     }
-    #panel h2 { font-size: 11px; color: #555577; letter-spacing: 3px; margin-bottom: 14px; }
-    .stat { margin-bottom: 10px; }
-    .label { font-size: 10px; color: #445; text-transform: uppercase; letter-spacing: 1px; }
-    .value { font-size: 22px; color: #58c8ff; font-weight: bold; }
-    .unit  { font-size: 12px; color: #445; }
-    #run-btn {
-      margin-top: 18px; width: 100%; padding: 9px;
-      background: #0d2540; color: #58c8ff;
-      border: 1px solid #1a4070; border-radius: 4px;
-      cursor: pointer; font-family: monospace; font-size: 12px;
+
+    /* animated top scan line */
+    #panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+      animation: scan 3s ease-in-out infinite;
+      opacity: 0.7;
+    }
+    @keyframes scan {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .panel-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(0,220,255,0.08);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: #00e5ff;
+      border: 1px solid rgba(0,229,255,0.4);
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-bottom: 8px;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      color: #e0eeff;
+    }
+
+    .panel-sub {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(0,229,255,0.45);
+      margin-top: 2px;
+    }
+
+    /* ── Stats row ────────────────────────────────────────── */
+    .stats-row {
+      display: flex;
+      padding: 14px 18px;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,220,255,0.08);
+    }
+
+    .stat { flex: 1; }
+
+    .label {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: rgba(0,229,255,0.4);
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #00e5ff;
+      line-height: 1;
+    }
+
+    .unit { font-size: 10px; color: rgba(0,229,255,0.5); }
+
+    /* ── Axis section ─────────────────────────────────────── */
+    .axes-section {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(0,220,255,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .axis-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .axis-name {
+      font-size: 9px;
       letter-spacing: 1px;
+      color: rgba(0,229,255,0.5);
+      width: 14px;
+      flex-shrink: 0;
     }
-    #run-btn:hover { background: #1a3a60; }
-    #run-btn:disabled { opacity: 0.5; cursor: default; }
-    #status { margin-top: 10px; font-size: 10px; color: #556; min-height: 14px; }
+
+    .axis-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(0,229,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .axis-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.05s linear;
+    }
+
+    #fill-a { background: linear-gradient(90deg, #00e5ff, #aa00ff); }
+    #fill-b { background: linear-gradient(90deg, #00e5ff, #ff00aa); }
+
+    .axis-val {
+      font-size: 10px;
+      color: #c0d8f0;
+      width: 46px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Motor row ────────────────────────────────────────── */
+    .motor-section {
+      padding: 10px 18px 14px;
+      border-bottom: 1px solid rgba(0,220,255,0.08);
+    }
+
+    .motor-label {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: rgba(0,229,255,0.4);
+      margin-bottom: 7px;
+    }
+
+    .motor-grid {
+      display: flex;
+      gap: 6px;
+    }
+
+    .motor-cell {
+      flex: 1;
+      background: rgba(0,229,255,0.04);
+      border: 1px solid rgba(0,229,255,0.1);
+      border-radius: 4px;
+      padding: 4px 0;
+      text-align: center;
+    }
+
+    .motor-cell .m-name { font-size: 8px; color: rgba(0,229,255,0.4); }
+    .motor-cell .m-val  { font-size: 11px; color: #a0c4e0; font-weight: bold; }
+
+    /* ── Button ───────────────────────────────────────────── */
+    .panel-footer { padding: 14px 18px; }
+
+    #run-btn {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 229, 255, 0.07);
+      color: #00e5ff;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 2px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    #run-btn:hover {
+      background: rgba(0, 229, 255, 0.14);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.2);
+    }
+
+    #run-btn:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+    #status {
+      margin-top: 8px;
+      font-size: 9px;
+      color: rgba(0,229,255,0.35);
+      letter-spacing: 1px;
+      min-height: 12px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <div id="canvas-container"></div>
+
   <div id="panel">
-    <h2>KINEMATRIX EDGE</h2>
-    <div class="stat">
-      <div class="label">Points</div>
-      <div class="value" id="count">—</div>
+    <div class="panel-header">
+      <div class="badge">ARM64 · 0.25ms</div>
+      <div class="panel-title">KINEMATRIX EDGE</div>
+      <div class="panel-sub">5-AXIS TRAJECTORY ENGINE</div>
     </div>
-    <div class="stat">
-      <div class="label">Engine time</div>
-      <div class="value"><span id="duration">—</span> <span class="unit">µs</span></div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="label">POINTS</div>
+        <div class="value" id="count">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">ENGINE TIME</div>
+        <div class="value"><span id="duration">—</span><span class="unit"> µs</span></div>
+      </div>
     </div>
-    <button id="run-btn">&#9654; RUN ENGINE</button>
-    <div id="status"></div>
+
+    <div class="axes-section">
+      <div class="axis-row">
+        <div class="axis-name">A</div>
+        <div class="axis-track"><div class="axis-fill" id="fill-a"></div></div>
+        <div class="axis-val" id="val-a">0.0°</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-name">B</div>
+        <div class="axis-track"><div class="axis-fill" id="fill-b"></div></div>
+        <div class="axis-val" id="val-b">0.0°</div>
+      </div>
+    </div>
+
+    <div class="motor-section">
+      <div class="motor-label">MOTOR STEPS</div>
+      <div class="motor-grid">
+        <div class="motor-cell"><div class="m-name">M1</div><div class="m-val" id="m1">—</div></div>
+        <div class="motor-cell"><div class="m-name">M2</div><div class="m-val" id="m2">—</div></div>
+        <div class="motor-cell"><div class="m-name">M3</div><div class="m-val" id="m3">—</div></div>
+        <div class="motor-cell"><div class="m-name">M4</div><div class="m-val" id="m4">—</div></div>
+        <div class="motor-cell"><div class="m-name">M5</div><div class="m-val" id="m5">—</div></div>
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <button id="run-btn">&#9654; RUN ENGINE</button>
+      <div id="status"></div>
+    </div>
   </div>
+
   <script type="importmap">
   {
     "imports": {
