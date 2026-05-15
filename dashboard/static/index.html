@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kinematrix-Edge</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #08080f; color: #d0d0e0; font-family: monospace; overflow: hidden; }
+    #canvas-container { position: fixed; inset: 0; }
+    #panel {
+      position: fixed; top: 20px; right: 20px; width: 230px;
+      background: rgba(8,8,20,0.88);
+      border: 1px solid #222244;
+      border-radius: 6px; padding: 18px; z-index: 10;
+    }
+    #panel h2 { font-size: 11px; color: #555577; letter-spacing: 3px; margin-bottom: 14px; }
+    .stat { margin-bottom: 10px; }
+    .label { font-size: 10px; color: #445; text-transform: uppercase; letter-spacing: 1px; }
+    .value { font-size: 22px; color: #58c8ff; font-weight: bold; }
+    .unit  { font-size: 12px; color: #445; }
+    #run-btn {
+      margin-top: 18px; width: 100%; padding: 9px;
+      background: #0d2540; color: #58c8ff;
+      border: 1px solid #1a4070; border-radius: 4px;
+      cursor: pointer; font-family: monospace; font-size: 12px;
+      letter-spacing: 1px;
+    }
+    #run-btn:hover { background: #1a3a60; }
+    #run-btn:disabled { opacity: 0.5; cursor: default; }
+    #status { margin-top: 10px; font-size: 10px; color: #556; min-height: 14px; }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="panel">
+    <h2>KINEMATRIX EDGE</h2>
+    <div class="stat">
+      <div class="label">Points</div>
+      <div class="value" id="count">—</div>
+    </div>
+    <div class="stat">
+      <div class="label">Engine time</div>
+      <div class="value"><span id="duration">—</span> <span class="unit">µs</span></div>
+    </div>
+    <button id="run-btn">&#9654; RUN ENGINE</button>
+    <div id="status"></div>
+  </div>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>
