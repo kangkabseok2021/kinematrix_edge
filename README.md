@@ -445,12 +445,14 @@ docker run --rm kinematrix-arm
 
 Results on Apple Silicon Mac emulating ARM64:
 
+![ARM64 benchmark output — PASS 0.251 ms median](docs/assets/benchmark.png)
+
 | | Min | Median | Max |
 |---|---|---|---|
-| µs | 247 | 253 | 651 |
-| ms | 0.247 | 0.253 | 0.651 |
+| µs | 227 | 251 | 2,586 |
+| ms | 0.227 | 0.251 | 2.586 |
 
-**PASS — median 0.253 ms, 40× under the 10 ms threshold.**
+**PASS — median 0.251 ms, 40× under the 10 ms threshold.**
 
 The pipeline (Thomas solve + 9,900-point evaluation + IK) completes in well under 1 ms even on emulated ARM edge hardware.
 
