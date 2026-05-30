@@ -10,7 +10,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.postgres",
-    "strawberry_django",
     "catalog",
 ]
 

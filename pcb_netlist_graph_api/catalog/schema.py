@@ -120,7 +120,10 @@ class Query:
         with connection.cursor() as cur:
             cur.execute(sql, [root_component_id])
             rows = cur.fetchall()
-        return [BomNodeType(id=int(r[0]), mfr_pn=str(r[1]), category=str(r[2]), depth=int(r[3])) for r in rows]
+        return [
+            BomNodeType(id=int(r[0]), mfr_pn=str(r[1]), category=str(r[2]), depth=int(r[3]))
+            for r in rows
+        ]
 
     @strawberry.field
     def netlist_graph(
@@ -128,7 +131,9 @@ class Query:
     ) -> NetlistGraphType:
         edges_qs = NetlistEdge.objects.filter(net_name=net_name).select_related("component")
         pins = [
-            PinType(component_id=int(e.component_id), mfr_pn=e.component.mfr_pn, pin_name=e.pin_name)
+            PinType(
+                component_id=int(e.component_id), mfr_pn=e.component.mfr_pn, pin_name=e.pin_name
+            )
             for e in edges_qs
         ]
         return NetlistGraphType(net_name=net_name, edges=pins)
