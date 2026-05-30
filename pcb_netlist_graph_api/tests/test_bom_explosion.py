@@ -1,17 +1,16 @@
 from __future__ import annotations
 
 import pytest
-from strawberry.test import Client
+from strawberry.test import TestClient
 
-from catalog.models import Component
 from tests.factories import ComponentFactory
 
 
 @pytest.mark.django_db
-def test_bom_explosion_single_root(gql_client: Client) -> None:
+def test_bom_explosion_single_root(gql_client: TestClient) -> None:
     root = ComponentFactory.create(category="assembly")
     result = gql_client.execute(
-        f'{{ bomExplosion(rootComponentId: {root.id}) {{ id mfrPn depth }} }}'
+        f"{{ bomExplosion(rootComponentId: {root.id}) {{ id mfrPn depth }} }}"
     )
     assert result.errors is None
     nodes = result.data["bomExplosion"]
@@ -21,12 +20,12 @@ def test_bom_explosion_single_root(gql_client: Client) -> None:
 
 
 @pytest.mark.django_db
-def test_bom_explosion_two_level_hierarchy(gql_client: Client) -> None:
+def test_bom_explosion_two_level_hierarchy(gql_client: TestClient) -> None:
     root = ComponentFactory.create(category="assembly")
     child1 = ComponentFactory.create(category="resistor", parent=root)
     child2 = ComponentFactory.create(category="capacitor", parent=root)
     result = gql_client.execute(
-        f'{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}'
+        f"{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}"
     )
     assert result.errors is None
     nodes = result.data["bomExplosion"]
@@ -38,12 +37,12 @@ def test_bom_explosion_two_level_hierarchy(gql_client: Client) -> None:
 
 
 @pytest.mark.django_db
-def test_bom_explosion_orders_by_depth(gql_client: Client) -> None:
+def test_bom_explosion_orders_by_depth(gql_client: TestClient) -> None:
     root = ComponentFactory.create(category="assembly")
     child = ComponentFactory.create(category="sub-assembly", parent=root)
-    grandchild = ComponentFactory.create(category="ic", parent=child)
+    ComponentFactory.create(category="ic", parent=child)
     result = gql_client.execute(
-        f'{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}'
+        f"{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}"
     )
     assert result.errors is None
     nodes = result.data["bomExplosion"]

@@ -12,12 +12,16 @@ class ComponentFactory(factory.django.DjangoModelFactory):
     mfr_pn = factory.Sequence(lambda n: f"MPN-{n:04d}")
     lcsc_code = factory.Sequence(lambda n: f"C{n:06d}")
     category = "resistor"
-    parameters: dict = factory.LazyAttribute(lambda _: {"resistance_ohm": 1000, "power_w": 0.1, "tolerance_pct": 1})
+    parameters: dict = factory.LazyAttribute(
+        lambda _: {"resistance_ohm": 1000, "power_w": 0.1, "tolerance_pct": 1}
+    )
 
 
 class CapacitorFactory(ComponentFactory):
     category = "capacitor"
-    parameters: dict = factory.LazyAttribute(lambda _: {"capacitance_nf": 100, "voltage_v": 16, "dielectric": "X5R"})
+    parameters: dict = factory.LazyAttribute(
+        lambda _: {"capacitance_nf": 100, "voltage_v": 16, "dielectric": "X5R"}
+    )
 
 
 class FootprintFactory(factory.django.DjangoModelFactory):

@@ -7,7 +7,7 @@ from celery import shared_task
 from catalog.models import Component
 
 
-@shared_task(bind=True)  # type: ignore[misc]
+@shared_task(bind=True)
 def validate_bom(self: Any, component_ids: list[int]) -> dict[str, list[int]]:
     rows = Component.objects.filter(id__in=component_ids).values("id", "mfr_pn", "lcsc_code")
     valid: list[int] = []

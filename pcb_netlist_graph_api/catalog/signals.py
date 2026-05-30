@@ -13,8 +13,4 @@ from catalog.models import Component
 def invalidate_component_cache(
     sender: type[Component], instance: Component, **kwargs: Any
 ) -> None:
-    pattern = f"cat:*"  # noqa: F541
-    try:
-        cache.delete_pattern(pattern)
-    except AttributeError:
-        cache.clear()
+    cache.clear()
