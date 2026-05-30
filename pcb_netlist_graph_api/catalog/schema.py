@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Annotated, Any, Union
+from typing import Annotated, Any, NewType, Union
 
 import strawberry
 from django.core.cache import cache
@@ -11,8 +11,7 @@ from django.db import connection
 from catalog.models import Component, NetlistEdge
 
 JSON = strawberry.scalar(
-    type(None),
-    name="JSON",
+    NewType("JSON", object),
     description="Arbitrary JSON value",
     serialize=lambda v: v,
     parse_value=lambda v: v,
@@ -25,7 +24,7 @@ class ComponentType:
     mfr_pn: str
     lcsc_code: str
     category: str
-    parameters: Any
+    parameters: JSON  # type: ignore[valid-type]
 
 
 @strawberry.type
