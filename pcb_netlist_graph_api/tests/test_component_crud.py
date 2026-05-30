@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
-from strawberry.test import TestClient
 
 from catalog.models import Component
 from tests.factories import ComponentFactory
 
 
 @pytest.mark.django_db
-def test_add_component_mutation(gql_client: TestClient) -> None:
-    result = gql_client.execute(
+def test_add_component_mutation(execute: Any) -> None:
+    result = execute(
         """
         mutation {
             addComponent(
@@ -31,18 +32,18 @@ def test_add_component_mutation(gql_client: TestClient) -> None:
 
 
 @pytest.mark.django_db
-def test_list_components_returns_all(gql_client: TestClient) -> None:
+def test_list_components_returns_all(execute: Any) -> None:
     ComponentFactory.create_batch(3)
-    result = gql_client.execute("{ components { id mfrPn } }")
+    result = execute("{ components { id mfrPn } }")
     assert result.errors is None
     assert len(result.data["components"]) == 3
 
 
 @pytest.mark.django_db
-def test_list_components_filtered_by_category(gql_client: TestClient) -> None:
+def test_list_components_filtered_by_category(execute: Any) -> None:
     ComponentFactory.create(category="resistor")
     ComponentFactory.create(category="capacitor")
-    result = gql_client.execute('{ components(category: "resistor") { mfrPn category } }')
+    result = execute('{ components(category: "resistor") { mfrPn category } }')
     assert result.errors is None
     items = result.data["components"]
     assert len(items) == 1
@@ -50,9 +51,9 @@ def test_list_components_filtered_by_category(gql_client: TestClient) -> None:
 
 
 @pytest.mark.django_db
-def test_add_component_duplicate_mfr_pn_returns_error(gql_client: TestClient) -> None:
+def test_add_component_duplicate_mfr_pn_returns_error(execute: Any) -> None:
     ComponentFactory.create(mfr_pn="DUPE-001")
-    result = gql_client.execute(
+    result = execute(
         """
         mutation {
             addComponent(mfrPn: "DUPE-001", lcscCode: "", category: "ic",
@@ -68,10 +69,10 @@ def test_add_component_duplicate_mfr_pn_returns_error(gql_client: TestClient) ->
 
 
 @pytest.mark.django_db
-def test_component_parameters_round_trip(gql_client: TestClient) -> None:
+def test_component_parameters_round_trip(execute: Any) -> None:
     params = {"resistance_ohm": 470, "power_w": 0.25, "tolerance_pct": 5}
     ComponentFactory.create(mfr_pn="RT-001", parameters=params)
-    result = gql_client.execute("{ components { mfrPn parameters } }")
+    result = execute("{ components { mfrPn parameters } }")
     assert result.errors is None
     stored = result.data["components"][0]["parameters"]
     assert stored["resistance_ohm"] == 470

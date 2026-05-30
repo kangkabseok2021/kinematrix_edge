@@ -10,7 +10,5 @@ from catalog.models import Component
 
 
 @receiver(post_save, sender=Component)
-def invalidate_component_cache(
-    sender: type[Component], instance: Component, **kwargs: Any
-) -> None:
+def invalidate_component_cache(sender: type[Component], instance: Component, **kwargs: Any) -> None:
     cache.clear()

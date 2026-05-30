@@ -80,13 +80,17 @@ class Query:
     @strawberry.field
     def components(
         self,
-        info: strawberry.types.Info,          category: str = "",
+        info: strawberry.types.Info,
+        category: str = "",
         param_filter: str = "{}",
     ) -> list[ComponentType]:
         filters: dict[str, Any] = json.loads(param_filter)
-        cache_key = "cat:" + hashlib.sha256(
-            json.dumps({"category": category, "filter": sorted(filters.items())}).encode()
-        ).hexdigest()
+        cache_key = (
+            "cat:"
+            + hashlib.sha256(
+                json.dumps({"category": category, "filter": sorted(filters.items())}).encode()
+            ).hexdigest()
+        )
         cached: list[ComponentType] | None = cache.get(cache_key)
         if cached is not None:
             return cached
@@ -101,7 +105,8 @@ class Query:
 
     @strawberry.field
     def bom_explosion(
-        self, info: strawberry.types.Info, root_component_id: int      ) -> list[BomNodeType]:
+        self, info: strawberry.types.Info, root_component_id: int
+    ) -> list[BomNodeType]:
         sql = """
             WITH RECURSIVE bom(id, depth) AS (
                 SELECT id, 0 FROM catalog_component WHERE id = %s
@@ -124,8 +129,7 @@ class Query:
         ]
 
     @strawberry.field
-    def netlist_graph(
-        self, info: strawberry.types.Info, net_name: str      ) -> NetlistGraphType:
+    def netlist_graph(self, info: strawberry.types.Info, net_name: str) -> NetlistGraphType:
         edges_qs = NetlistEdge.objects.filter(net_name=net_name).select_related("component")
         pins = [
             PinType(
@@ -141,7 +145,8 @@ class Mutation:
     @strawberry.mutation
     def add_component(
         self,
-        info: strawberry.types.Info,          mfr_pn: str,
+        info: strawberry.types.Info,
+        mfr_pn: str,
         lcsc_code: str,
         category: str,
         parameters: str = "{}",
@@ -158,7 +163,8 @@ class Mutation:
     @strawberry.mutation
     def create_netlist_edge(
         self,
-        info: strawberry.types.Info,          net_name: str,
+        info: strawberry.types.Info,
+        net_name: str,
         component_id: int,
         pin_name: str,
     ) -> ComponentResult:

@@ -14,7 +14,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Component",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
                 ("mfr_pn", models.CharField(max_length=128, unique=True)),
                 ("lcsc_code", models.CharField(blank=True, default="", max_length=32)),
                 ("category", models.CharField(db_index=True, max_length=64)),
@@ -34,7 +39,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Footprint",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
                 ("ipc_code", models.CharField(max_length=64, unique=True)),
                 ("pad_count", models.PositiveIntegerField()),
                 ("pitch_mm", models.DecimalField(decimal_places=3, max_digits=6)),
@@ -43,7 +53,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="NetlistEdge",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
                 ("net_name", models.CharField(db_index=True, max_length=128)),
                 (
                     "component",

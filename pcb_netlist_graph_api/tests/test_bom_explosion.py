@@ -1,17 +1,16 @@
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
-from strawberry.test import TestClient
 
 from tests.factories import ComponentFactory
 
 
 @pytest.mark.django_db
-def test_bom_explosion_single_root(gql_client: TestClient) -> None:
+def test_bom_explosion_single_root(execute: Any) -> None:
     root = ComponentFactory.create(category="assembly")
-    result = gql_client.execute(
-        f"{{ bomExplosion(rootComponentId: {root.id}) {{ id mfrPn depth }} }}"
-    )
+    result = execute(f"{{ bomExplosion(rootComponentId: {root.id}) {{ id mfrPn depth }} }}")
     assert result.errors is None
     nodes = result.data["bomExplosion"]
     assert len(nodes) == 1
@@ -20,13 +19,11 @@ def test_bom_explosion_single_root(gql_client: TestClient) -> None:
 
 
 @pytest.mark.django_db
-def test_bom_explosion_two_level_hierarchy(gql_client: TestClient) -> None:
+def test_bom_explosion_two_level_hierarchy(execute: Any) -> None:
     root = ComponentFactory.create(category="assembly")
     child1 = ComponentFactory.create(category="resistor", parent=root)
     child2 = ComponentFactory.create(category="capacitor", parent=root)
-    result = gql_client.execute(
-        f"{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}"
-    )
+    result = execute(f"{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}")
     assert result.errors is None
     nodes = result.data["bomExplosion"]
     assert len(nodes) == 3
@@ -37,13 +34,11 @@ def test_bom_explosion_two_level_hierarchy(gql_client: TestClient) -> None:
 
 
 @pytest.mark.django_db
-def test_bom_explosion_orders_by_depth(gql_client: TestClient) -> None:
+def test_bom_explosion_orders_by_depth(execute: Any) -> None:
     root = ComponentFactory.create(category="assembly")
     child = ComponentFactory.create(category="sub-assembly", parent=root)
     ComponentFactory.create(category="ic", parent=child)
-    result = gql_client.execute(
-        f"{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}"
-    )
+    result = execute(f"{{ bomExplosion(rootComponentId: {root.id}) {{ id depth }} }}")
     assert result.errors is None
     nodes = result.data["bomExplosion"]
     assert len(nodes) == 3
