@@ -1,0 +1,51 @@
+[project]
+name = "pcb-netlist-graph-api"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.0",
+    "strawberry-graphql[django]>=0.233",
+    "psycopg2-binary>=2.9",
+    "django-redis>=5.4",
+    "celery[redis]>=5.3",
+    "redis>=5.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["catalog", "pcb_api"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8",
+    "pytest-django>=4.8",
+    "factory-boy>=3.3",
+    "mypy>=1.10",
+    "django-stubs[compatible-mypy]>=5.0",
+    "celery-types>=0.22",
+    "ruff>=0.6",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "pcb_api.settings"
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["mypy_django_plugin.main"]
+
+[[tool.mypy.overrides]]
+module = ["strawberry.*", "celery.*", "django_redis.*"]
+ignore_missing_imports = true
+ignore_errors = true
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

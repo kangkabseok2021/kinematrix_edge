@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: pcb
+      POSTGRES_PASSWORD: pcb
+      POSTGRES_DB: pcbdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "pcb", "-d", "pcbdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: pcb
+      POSTGRES_PASSWORD: pcb
+      POSTGRES_DB: pcbdb
+      REDIS_URL: redis://redis:6379/0
+      DEBUG: "0"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery:
+    build: .
+    command: python -m celery -A pcb_api worker --loglevel=info
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: pcb
+      POSTGRES_PASSWORD: pcb
+      POSTGRES_DB: pcbdb
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:
