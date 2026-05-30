@@ -1,0 +1,2 @@
+add_executable(kinematrix_bench bench_main.cpp)
+target_link_libraries(kinematrix_bench PRIVATE kinematrix)
